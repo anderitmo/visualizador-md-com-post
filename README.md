@@ -1,6 +1,6 @@
 # MDView
 
-(https://github.com "Acesse o Visualizador")
+Acesse a aplicação [MD View com POST](https://anderitmo.github.io/visualizador-md-com-post/) para mais recursos.
 
 Aplicacao estatica minimalista para escrever e visualizar Markdown no navegador.
 Funciona com GitHub Pages e renderiza blocos Mermaid.
