@@ -15,13 +15,13 @@ Abra `index.html` diretamente ou publique estes arquivos no GitHub Pages.
 ## Enviar Markdown por URL
 
 ```text
-https://seu-usuario.github.io/MDView/?md=#%20Titulo%0A%0ATexto
+https://anderitmo.github.io/MDView/?md=#%20Titulo%0A%0ATexto
 ```
 
 Tambem e possivel enviar em base64 UTF-8:
 
 ```text
-https://seu-usuario.github.io/MDView/?md64=IyBUaXR1bG8KClRleHRv
+https://anderitmo.github.io/MDView/?md64=IyBUaXR1bG8KClRleHRv
 ```
 
 ## Receber Markdown por POST
@@ -33,8 +33,8 @@ mantendo a hospedagem compativel com GitHub Pages.
 Endpoints aceitos:
 
 ```text
-https://seu-usuario.github.io/MDView/render
-https://seu-usuario.github.io/MDView/post
+https://anderitmo.github.io/MDView/render
+https://anderitmo.github.io/MDView/post
 ```
 
 ### Exemplo com formulario HTML
