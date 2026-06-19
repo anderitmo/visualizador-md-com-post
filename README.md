@@ -118,7 +118,7 @@ ou iframe e enviar o conteudo com `postMessage`:
         type: "mdview:render",
         markdown: "# Saida gerada\n\n```mermaid\nflowchart LR\nA --> B\n```",
       },
-      "https://usuario.github.io",
+      "https://anderitmo.github.io",
     );
   });
 </script>

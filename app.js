@@ -5,6 +5,8 @@ const preview = document.querySelector("#preview");
 const status = document.querySelector("#status");
 const sampleButton = document.querySelector("#sampleButton");
 const clearButton = document.querySelector("#clearButton");
+const copyMarkdownButton = document.querySelector("#copyMarkdownButton");
+const copyPreviewButton = document.querySelector("#copyPreviewButton");
 
 const STORAGE_KEY = "mdview:markdown";
 const INCOMING_KEY = "mdview:incoming";
@@ -69,6 +71,45 @@ function decodeRawHashMarkdown(params, hash) {
 
 function setStatus(message) {
   status.textContent = message;
+}
+
+async function copyText(text, successMessage) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+  } else {
+    fallbackCopy(text);
+  }
+
+  setStatus(successMessage);
+}
+
+async function copyPreview() {
+  const html = preview.innerHTML;
+  const text = preview.innerText;
+
+  if (navigator.clipboard?.write && window.ClipboardItem) {
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        "text/html": new Blob([html], { type: "text/html" }),
+        "text/plain": new Blob([text], { type: "text/plain" }),
+      }),
+    ]);
+  } else {
+    fallbackCopy(text);
+  }
+
+  setStatus("Visualizador copiado");
+}
+
+function fallbackCopy(text) {
+  const copyArea = document.createElement("textarea");
+  copyArea.value = text;
+  copyArea.setAttribute("readonly", "");
+  copyArea.className = "copy-fallback";
+  document.body.append(copyArea);
+  copyArea.select();
+  document.execCommand("copy");
+  copyArea.remove();
 }
 
 function replaceMermaidBlocks(markdown) {
@@ -137,6 +178,20 @@ sampleButton.addEventListener("click", () => {
 
 clearButton.addEventListener("click", () => {
   setMarkdown("");
+});
+
+copyMarkdownButton.addEventListener("click", () => {
+  copyText(editor.value, "Markdown copiado").catch((error) => {
+    console.error(error);
+    setStatus("Nao foi possivel copiar");
+  });
+});
+
+copyPreviewButton.addEventListener("click", () => {
+  copyPreview().catch((error) => {
+    console.error(error);
+    setStatus("Nao foi possivel copiar");
+  });
 });
 
 window.addEventListener("message", (event) => {

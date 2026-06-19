@@ -30,6 +30,9 @@
           aria-label="Conteudo Markdown"
           placeholder="Digite Markdown aqui ou envie por postMessage/URL..."
         ></textarea>
+        <div class="pane-actions">
+          <button id="copyMarkdownButton" type="button">Copiar Markdown</button>
+        </div>
       </section>
 
       <section class="pane preview-pane" aria-label="Visualizacao Markdown">
@@ -38,6 +41,9 @@
           <span class="hint">Suporta blocos ```mermaid</span>
         </div>
         <article id="preview" class="markdown-body"></article>
+        <div class="pane-actions">
+          <button id="copyPreviewButton" type="button">Copiar visualizador</button>
+        </div>
       </section>
     </main>
 
@@ -47,14 +53,14 @@
         <div class="docs-grid">
           <div>
             <h3>POST via formulario</h3>
-            <pre><code>&lt;form action="https://seu-usuario.github.io/MDView/render" method="post" target="_blank"&gt;
+            <pre><code>&lt;form action="https://anderitmo.github.io/visualizador-md-com-post/render" method="post" target="_blank"&gt;
   &lt;textarea name="markdown"&gt;# Relatorio&lt;/textarea&gt;
   &lt;button type="submit"&gt;Visualizar&lt;/button&gt;
 &lt;/form&gt;</code></pre>
           </div>
           <div>
             <h3>POST via fetch</h3>
-            <pre><code>await fetch("https://seu-usuario.github.io/MDView/render", {
+            <pre><code>await fetch("https://anderitmo.github.io/visualizador-md-com-post/render", {
   method: "POST",
   headers: { "content-type": "application/json" },
   body: JSON.stringify({ markdown: "# Relatorio" })
@@ -65,7 +71,7 @@
             <pre><code>iframe.contentWindow.postMessage({
   type: "mdview:render",
   markdown: "# Relatorio"
-}, "https://seu-usuario.github.io");</code></pre>
+}, "https://anderitmo.github.io");</code></pre>
           </div>
         </div>
         <p>

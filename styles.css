@@ -123,6 +123,25 @@ textarea {
     monospace;
 }
 
+.pane-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: #fbfcfe;
+}
+
+.pane-actions button {
+  min-width: 150px;
+}
+
+.copy-fallback {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+}
+
 .markdown-body {
   min-height: 0;
   flex: 1;
