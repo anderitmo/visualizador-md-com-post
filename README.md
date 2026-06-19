@@ -40,7 +40,7 @@ https://anderitmo.github.io/MDView/post
 ### Exemplo com formulario HTML
 
 ~~~html
-<form action="https://seu-usuario.github.io/MDView/render" method="post" target="_blank">
+<form action="https://anderitmo.github.io/MDView/render" method="post" target="_blank">
   <textarea name="markdown">
 # Saida gerada
 
@@ -56,7 +56,7 @@ flowchart LR
 ### Exemplo com fetch usando JSON
 
 ```js
-await fetch("https://seu-usuario.github.io/MDView/render", {
+await fetch("https://anderitmo.github.io/MDView/render", {
   method: "POST",
   headers: {
     "content-type": "application/json",
@@ -74,7 +74,7 @@ const body = new URLSearchParams({
   markdown: "# Relatorio\n\n- Item 1\n- Item 2",
 });
 
-await fetch("https://seu-usuario.github.io/MDView/render", {
+await fetch("https://anderitmo.github.io/MDView/render", {
   method: "POST",
   headers: {
     "content-type": "application/x-www-form-urlencoded",
@@ -86,7 +86,7 @@ await fetch("https://seu-usuario.github.io/MDView/render", {
 ### Exemplo com curl
 
 ```bash
-curl -X POST "https://seu-usuario.github.io/MDView/render" \
+curl -X POST "https://anderitmo.github.io/MDView/render" \
   -H "content-type: application/json" \
   -d '{"markdown":"# Relatorio\n\n```mermaid\nflowchart LR\nA --> B\n```"}'
 ```
@@ -108,7 +108,7 @@ Para hospedagem estatica, o caminho recomendado e abrir o MDView em uma janela
 ou iframe e enviar o conteudo com `postMessage`:
 
 ```html
-<iframe id="mdview" src="https://seu-usuario.github.io/MDView/"></iframe>
+<iframe id="mdview" src="https://anderitmo.github.io/MDView/"></iframe>
 
 <script>
   const iframe = document.querySelector("#mdview");
@@ -119,7 +119,7 @@ ou iframe e enviar o conteudo com `postMessage`:
         type: "mdview:render",
         markdown: "# Saida gerada\n\n```mermaid\nflowchart LR\nA --> B\n```",
       },
-      "https://seu-usuario.github.io",
+      "https://anderitmo.github.io",
     );
   });
 </script>
