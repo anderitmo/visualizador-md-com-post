@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MDView</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>MDView</h1>
+        <p>Escreva, envie e visualize Markdown com Mermaid.</p>
+      </div>
+      <div class="actions">
+        <button id="sampleButton" type="button">Exemplo</button>
+        <button id="clearButton" type="button">Limpar</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="pane editor-pane" aria-label="Editor Markdown">
+        <div class="pane-header">
+          <h2>Markdown</h2>
+          <span id="status" class="status">Pronto</span>
+        </div>
+        <textarea
+          id="editor"
+          spellcheck="false"
+          aria-label="Conteudo Markdown"
+          placeholder="Digite Markdown aqui ou envie por postMessage/URL..."
+        ></textarea>
+      </section>
+
+      <section class="pane preview-pane" aria-label="Visualizacao Markdown">
+        <div class="pane-header">
+          <h2>Preview</h2>
+          <span class="hint">Suporta blocos ```mermaid</span>
+        </div>
+        <article id="preview" class="markdown-body"></article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <details>
+        <summary>Como enviar Markdown para o MDView</summary>
+        <div class="docs-grid">
+          <div>
+            <h3>POST via formulario</h3>
+            <pre><code>&lt;form action="https://seu-usuario.github.io/MDView/render" method="post" target="_blank"&gt;
+  &lt;textarea name="markdown"&gt;# Relatorio&lt;/textarea&gt;
+  &lt;button type="submit"&gt;Visualizar&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          </div>
+          <div>
+            <h3>POST via fetch</h3>
+            <pre><code>await fetch("https://seu-usuario.github.io/MDView/render", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ markdown: "# Relatorio" })
+});</code></pre>
+          </div>
+          <div>
+            <h3>postMessage</h3>
+            <pre><code>iframe.contentWindow.postMessage({
+  type: "mdview:render",
+  markdown: "# Relatorio"
+}, "https://seu-usuario.github.io");</code></pre>
+          </div>
+        </div>
+        <p>
+          Em GitHub Pages, o POST e interceptado por Service Worker no navegador.
+          Abra a pagina uma vez antes de testar <code>/render</code>.
+        </p>
+      </details>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
