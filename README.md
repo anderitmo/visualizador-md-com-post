@@ -10,7 +10,7 @@ Abra `index.html` diretamente ou publique estes arquivos no GitHub Pages.
 ## Enviar Markdown por URL
 
 ```text
-https://seu-usuario.github.io/MDView/?md=%23%20Titulo%0A%0ATexto
+https://anderitmo/visualizador-md-com-post/?md=%23%20Titulo%0A%0ATexto
 ```
 
 O caractere `#` precisa ser enviado como `%23`, porque `#` sem escape inicia o
@@ -20,7 +20,7 @@ caso `?md=#%20Titulo`, mas o formato recomendado e sempre codificar o conteudo.
 Tambem e possivel enviar em base64 UTF-8:
 
 ```text
-https://seu-usuario.github.io/MDView/?md64=IyBUaXR1bG8KClRleHRv
+https://anderitmo/visualizador-md-com-post/?md64=IyBUaXR1bG8KClRleHRv
 ```
 
 ## Receber Markdown por POST
@@ -32,14 +32,14 @@ mantendo a hospedagem compativel com GitHub Pages.
 Endpoints aceitos:
 
 ```text
-https://seu-usuario.github.io/MDView/render
-https://seu-usuario.github.io/MDView/post
+https://anderitmo/visualizador-md-com-post/render
+https://anderitmo/visualizador-md-com-post/post
 ```
 
 ### Exemplo com formulario HTML
 
 ~~~html
-<form action="https://seu-usuario.github.io/MDView/render" method="post" target="_blank">
+<form action="https://anderitmo/visualizador-md-com-post/render" method="post" target="_blank">
   <textarea name="markdown">
 # Saida gerada
 
@@ -55,7 +55,7 @@ flowchart LR
 ### Exemplo com fetch usando JSON
 
 ```js
-await fetch("https://seu-usuario.github.io/MDView/render", {
+await fetch("https://anderitmo/visualizador-md-com-post/render", {
   method: "POST",
   headers: {
     "content-type": "application/json",
@@ -73,7 +73,7 @@ const body = new URLSearchParams({
   markdown: "# Relatorio\n\n- Item 1\n- Item 2",
 });
 
-await fetch("https://seu-usuario.github.io/MDView/render", {
+await fetch("https://anderitmo/visualizador-md-com-post/render", {
   method: "POST",
   headers: {
     "content-type": "application/x-www-form-urlencoded",
@@ -85,7 +85,7 @@ await fetch("https://seu-usuario.github.io/MDView/render", {
 ### Exemplo com curl
 
 ```bash
-curl -X POST "https://seu-usuario.github.io/MDView/render" \
+curl -X POST "https://anderitmo/visualizador-md-com-post/render" \
   -H "content-type: application/json" \
   -d '{"markdown":"# Relatorio\n\n```mermaid\nflowchart LR\nA --> B\n```"}'
 ```
@@ -107,7 +107,7 @@ Para hospedagem estatica, o caminho recomendado e abrir o MDView em uma janela
 ou iframe e enviar o conteudo com `postMessage`:
 
 ```html
-<iframe id="mdview" src="https://seu-usuario.github.io/MDView/"></iframe>
+<iframe id="mdview" src="https://anderitmo/visualizador-md-com-post/"></iframe>
 
 <script>
   const iframe = document.querySelector("#mdview");
