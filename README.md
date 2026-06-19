@@ -1,5 +1,8 @@
 # MDView
 
+![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-brightgreen)
+![Tech](https://img.shields.io/badge/Tecnologia-HTML5%20Canvas%20%7C%20Vanilla%20JS-blue)
+
 Acesse a aplicação [MD View com POST](https://anderitmo.github.io/visualizador-md-com-post/) no GitPages.
 
 Aplicacao estatica minimalista para escrever e visualizar Markdown no navegador.
