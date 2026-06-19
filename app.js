@@ -39,8 +39,9 @@ mermaid.initialize({
 
 function decodeMarkdownFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  const raw = params.get("md") || hashParams.get("md");
+  const hash = window.location.hash.replace(/^#/, "");
+  const hashParams = new URLSearchParams(hash);
+  const raw = params.get("md") || hashParams.get("md") || decodeRawHashMarkdown(params, hash);
   const encoded = params.get("md64") || hashParams.get("md64");
 
   if (encoded) {
@@ -52,6 +53,18 @@ function decodeMarkdownFromUrl() {
   }
 
   return raw;
+}
+
+function decodeRawHashMarkdown(params, hash) {
+  if (!hash || !params.has("md") || params.get("md") !== "") {
+    return null;
+  }
+
+  try {
+    return `#${decodeURIComponent(hash)}`;
+  } catch {
+    return `#${hash}`;
+  }
 }
 
 function setStatus(message) {
