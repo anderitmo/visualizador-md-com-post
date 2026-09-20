@@ -59,7 +59,23 @@ h1 {
 
 .actions {
   display: flex;
+  align-items: center;
   gap: 8px;
+}
+
+.lang-select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  padding: 8px 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+.lang-select:hover {
+  border-color: var(--accent);
 }
 
 button,
@@ -67,6 +83,7 @@ button,
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--panel);
@@ -81,6 +98,44 @@ button:hover,
 .button-label:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  background: #fbfcfe;
+  border-bottom: 1px solid var(--border);
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.tool-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: transparent;
+}
+
+.tool-divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 4px;
+  background: var(--border);
 }
 
 .workspace {

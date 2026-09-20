@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MDView</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -13,58 +14,89 @@
         <p>Escreva, envie e visualize Markdown com Mermaid.</p>
       </div>
       <div class="actions">
-        <label for="importFileInput" class="button-label" title="Converter arquivo PDF ou DOCX para Markdown">
-          Converter PDF/DOCX
+        <select id="langSelect" class="lang-select" aria-label="Idioma / Language">
+          <option value="pt-BR">Português (BR)</option>
+          <option value="en">English</option>
+        </select>
+        <label for="importFileInput" class="button-label" title="Converter arquivo PDF ou DOCX para Markdown" data-i18n-title="convertTooltip">
+          <i class="bi bi-file-earmark-arrow-up"></i>
+          <span data-i18n="convertBtn">Converter PDF/DOCX</span>
           <input id="importFileInput" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display: none;" />
         </label>
-        <button id="sampleButton" type="button">Exemplo</button>
-        <button id="clearButton" type="button">Limpar</button>
+        <button id="sampleButton" type="button"><i class="bi bi-journal-text"></i> <span data-i18n="sampleBtn">Exemplo</span></button>
+        <button id="clearButton" type="button"><i class="bi bi-trash"></i> <span data-i18n="clearBtn">Limpar</span></button>
       </div>
     </header>
 
     <main class="workspace">
       <section class="pane editor-pane" aria-label="Editor Markdown">
         <div class="pane-header">
-          <h2>Markdown</h2>
-          <span id="status" class="status">Pronto</span>
+          <h2 data-i18n="editorHeader">Markdown</h2>
+          <span id="status" class="status" data-i18n="statusReady">Pronto</span>
+        </div>
+        <div class="editor-toolbar" role="toolbar" aria-label="Barra de ferramentas de formatação">
+          <button type="button" class="tool-btn" data-action="bold" title="Negrito (Ctrl+B)"><i class="bi bi-type-bold"></i></button>
+          <button type="button" class="tool-btn" data-action="italic" title="Itálico (Ctrl+I)"><i class="bi bi-type-italic"></i></button>
+          <button type="button" class="tool-btn" data-action="strikethrough" title="Tachado"><i class="bi bi-type-strikethrough"></i></button>
+          <span class="tool-divider"></span>
+          <button type="button" class="tool-btn" data-action="h1" title="Título 1"><i class="bi bi-type-h1"></i></button>
+          <button type="button" class="tool-btn" data-action="h2" title="Título 2"><i class="bi bi-type-h2"></i></button>
+          <button type="button" class="tool-btn" data-action="h3" title="Título 3"><i class="bi bi-type-h3"></i></button>
+          <span class="tool-divider"></span>
+          <button type="button" class="tool-btn" data-action="ul" title="Lista sem ordenação"><i class="bi bi-list-ul"></i></button>
+          <button type="button" class="tool-btn" data-action="ol" title="Lista ordenada"><i class="bi bi-list-ol"></i></button>
+          <button type="button" class="tool-btn" data-action="task" title="Lista de tarefas"><i class="bi bi-check2-square"></i></button>
+          <span class="tool-divider"></span>
+          <button type="button" class="tool-btn" data-action="quote" title="Citação"><i class="bi bi-quote"></i></button>
+          <button type="button" class="tool-btn" data-action="code" title="Código em linha"><i class="bi bi-code"></i></button>
+          <button type="button" class="tool-btn" data-action="codeblock" title="Bloco de código"><i class="bi bi-code-square"></i></button>
+          <span class="tool-divider"></span>
+          <button type="button" class="tool-btn" data-action="link" title="Inserir Link"><i class="bi bi-link-45deg"></i></button>
+          <button type="button" class="tool-btn" data-action="image" title="Inserir Imagem"><i class="bi bi-image"></i></button>
+          <button type="button" class="tool-btn" data-action="table" title="Inserir Tabela"><i class="bi bi-table"></i></button>
+          <button type="button" class="tool-btn" data-action="hr" title="Linha Horizontal"><i class="bi bi-hr"></i></button>
+          <span class="tool-divider"></span>
+          <button type="button" class="tool-btn" data-action="undo" title="Desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>
+          <button type="button" class="tool-btn" data-action="redo" title="Refazer"><i class="bi bi-arrow-clockwise"></i></button>
         </div>
         <textarea
           id="editor"
           spellcheck="false"
-          aria-label="Conteudo Markdown"
+          aria-label="Conteúdo Markdown"
           placeholder="Digite Markdown aqui ou envie por postMessage/URL..."
+          data-i18n-placeholder="editorPlaceholder"
         ></textarea>
         <div class="pane-actions">
-          <button id="saveMarkdownButton" type="button">Salvar .MD</button>
-          <button id="copyMarkdownButton" type="button">Copiar Markdown</button>
+          <button id="saveMarkdownButton" type="button"><i class="bi bi-download"></i> <span data-i18n="saveMdBtn">Salvar .MD</span></button>
+          <button id="copyMarkdownButton" type="button"><i class="bi bi-clipboard"></i> <span data-i18n="copyMdBtn">Copiar Markdown</span></button>
         </div>
       </section>
 
       <section class="pane preview-pane" aria-label="Visualizacao Markdown">
         <div class="pane-header">
-          <h2>Preview</h2>
-          <span class="hint">Suporta blocos ```mermaid</span>
+          <h2 data-i18n="previewHeader">Preview</h2>
+          <span class="hint" data-i18n="mermaidHint">Suporta blocos ```mermaid</span>
         </div>
         <article id="preview" class="markdown-body"></article>
         <div class="pane-actions">
-          <button id="copyPreviewButton" type="button">Copiar visualizador</button>
+          <button id="copyPreviewButton" type="button"><i class="bi bi-clipboard-check"></i> <span data-i18n="copyPreviewBtn">Copiar visualizador</span></button>
         </div>
       </section>
     </main>
 
     <footer class="footer">
       <details>
-        <summary>Como enviar Markdown para o MDView</summary>
+        <summary data-i18n="docsSummary">Como enviar Markdown para o MDView</summary>
         <div class="docs-grid">
           <div>
-            <h3>POST via formulario</h3>
+            <h3 data-i18n="docFormTitle">POST via formulário</h3>
             <pre><code>&lt;form action="https://anderitmo.github.io/visualizador-md-com-post/render" method="post" target="_blank"&gt;
   &lt;textarea name="markdown"&gt;# Relatorio&lt;/textarea&gt;
   &lt;button type="submit"&gt;Visualizar&lt;/button&gt;
 &lt;/form&gt;</code></pre>
           </div>
           <div>
-            <h3>POST via fetch</h3>
+            <h3 data-i18n="docFetchTitle">POST via fetch (com download)</h3>
             <pre><code>await fetch("https://anderitmo.github.io/visualizador-md-com-post/render", {
   method: "POST",
   headers: { "content-type": "application/json" },
@@ -72,16 +104,13 @@
 });</code></pre>
           </div>
           <div>
-            <h3>postMessage</h3>
-            <pre><code>iframe.contentWindow.postMessage({
-  type: "mdview:render",
-  markdown: "# Relatorio"
-}, "https://anderitmo.github.io");</code></pre>
+            <h3 data-i18n="docGetTitle">GET com download automático</h3>
+            <pre><code>https://anderitmo.github.io/visualizador-md-com-post/?md=%23%20Titulo&download=true</code></pre>
           </div>
         </div>
-        <p>
+        <p data-i18n="docFooterNote">
           Em GitHub Pages, o POST e interceptado por Service Worker no navegador.
-          Abra a pagina uma vez antes de testar <code>/render</code>.
+          Abra a pagina uma vez antes de testar <code>/render</code>. Use o parâmetro <code>download=true</code> para baixar o arquivo <code>.md</code> automaticamente.
         </p>
       </details>
     </footer>
