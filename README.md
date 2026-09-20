@@ -7,6 +7,13 @@ Funciona com GitHub Pages e renderiza blocos Mermaid.
 
 Abra `index.html` diretamente ou publique estes arquivos no GitHub Pages.
 
+## Recursos Principais
+
+- Editor e visualizador de Markdown com suporte a diagramas **Mermaid**.
+- **Conversao de PDF e DOCX para Markdown**: Importe arquivos de texto/documento diretamente na interface.
+- **Botao Salvar .MD**: Baixe o conteudo em Markdown diretamente como um arquivo `.md`.
+- **Download automatico via parametro**: Ao enviar conteudo via GET ou POST, informe o parametro `download=true` (ou `download=1`) para disparar o download automatico do arquivo `.md`.
+
 ## Enviar Markdown por URL
 
 ```text
@@ -21,6 +28,14 @@ Tambem e possivel enviar em base64 UTF-8:
 
 ```text
 https://anderitmo.github.io/visualizador-md-com-post/?md64=IyBUaXR1bG8KClRleHRv
+```
+
+### Download automatico por GET
+
+Adicione `download=true` (ou `download=1` ou `download=meuarquivo.md`) a URL:
+
+```text
+https://anderitmo.github.io/visualizador-md-com-post/?md=%23%20Titulo&download=true
 ```
 
 ## Receber Markdown por POST
@@ -52,7 +67,7 @@ flowchart LR
 </form>
 ~~~
 
-### Exemplo com fetch usando JSON
+### Exemplo com fetch usando JSON (com download automatico)
 
 ```js
 await fetch("https://anderitmo.github.io/visualizador-md-com-post/render", {
@@ -62,6 +77,8 @@ await fetch("https://anderitmo.github.io/visualizador-md-com-post/render", {
   },
   body: JSON.stringify({
     markdown: "# Relatorio\n\nTexto em **Markdown**.",
+    download: true,
+    filename: "relatorio.md"
   }),
 });
 ```
