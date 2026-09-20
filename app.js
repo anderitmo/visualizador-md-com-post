@@ -14,6 +14,102 @@ const copyMarkdownButton = document.querySelector("#copyMarkdownButton");
 const saveMarkdownButton = document.querySelector("#saveMarkdownButton");
 const copyPreviewButton = document.querySelector("#copyPreviewButton");
 const importFileInput = document.querySelector("#importFileInput");
+const langSelect = document.querySelector("#langSelect");
+
+const I18N = {
+  "pt-BR": {
+    convertBtn: "Converter PDF/DOCX",
+    convertTooltip: "Converter arquivo PDF ou DOCX para Markdown",
+    sampleBtn: "Exemplo",
+    clearBtn: "Limpar",
+    editorHeader: "Markdown",
+    statusReady: "Pronto",
+    saveMdBtn: "Salvar .MD",
+    copyMdBtn: "Copiar Markdown",
+    previewHeader: "Preview",
+    mermaidHint: "Suporta blocos ```mermaid",
+    copyPreviewBtn: "Copiar visualizador",
+    docsSummary: "Como enviar Markdown para o MDView",
+    docFormTitle: "POST via formulário",
+    docFetchTitle: "POST via fetch (com download)",
+    docGetTitle: "GET com download automático",
+    docFooterNote: "Em GitHub Pages, o POST e interceptado por Service Worker no navegador. Abra a pagina uma vez antes de testar /render. Use o parâmetro download=true para baixar o arquivo .md automaticamente.",
+    editorPlaceholder: "Digite Markdown aqui ou envie por postMessage/URL...",
+    statusRendered: "Renderizado",
+    statusMermaidError: "Erro no Mermaid",
+    statusCopied: "Markdown copiado",
+    statusPreviewCopied: "Visualizador copiado",
+    statusCopyError: "Não foi possível copiar",
+    statusSaved: "Arquivo .MD baixado",
+    statusConverting: "Convertendo arquivo...",
+    statusFormatError: "Formato não suportado. Use .docx ou .pdf",
+    statusConvertError: "Erro ao converter arquivo",
+    statusAutoDownload: "Download automático iniciado",
+  },
+  "en": {
+    convertBtn: "Convert PDF/DOCX",
+    convertTooltip: "Convert PDF or DOCX file to Markdown",
+    sampleBtn: "Sample",
+    clearBtn: "Clear",
+    editorHeader: "Markdown",
+    statusReady: "Ready",
+    saveMdBtn: "Save .MD",
+    copyMdBtn: "Copy Markdown",
+    previewHeader: "Preview",
+    mermaidHint: "Supports ```mermaid blocks",
+    copyPreviewBtn: "Copy renderer",
+    docsSummary: "How to send Markdown to MDView",
+    docFormTitle: "POST via form",
+    docFetchTitle: "POST via fetch (with download)",
+    docGetTitle: "GET with auto-download",
+    docFooterNote: "On GitHub Pages, POST is intercepted by a Service Worker in the browser. Open the page once before testing /render. Use the download=true parameter to automatically download the .md file.",
+    editorPlaceholder: "Type Markdown here or send via postMessage/URL...",
+    statusRendered: "Rendered",
+    statusMermaidError: "Mermaid error",
+    statusCopied: "Markdown copied",
+    statusPreviewCopied: "Renderer copied",
+    statusCopyError: "Could not copy",
+    statusSaved: ".MD file downloaded",
+    statusConverting: "Converting file...",
+    statusFormatError: "Unsupported format. Use .docx or .pdf",
+    statusConvertError: "Error converting file",
+    statusAutoDownload: "Automatic download started",
+  }
+};
+
+let currentLang = "pt-BR";
+
+function setLanguage(lang) {
+  if (!I18N[lang]) lang = "pt-BR";
+  currentLang = lang;
+  if (langSelect) langSelect.value = lang;
+
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (I18N[lang][key]) {
+      el.textContent = I18N[lang][key];
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-title");
+    if (I18N[lang][key]) {
+      el.setAttribute("title", I18N[lang][key]);
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (I18N[lang][key]) {
+      el.setAttribute("placeholder", I18N[lang][key]);
+    }
+  });
+}
+
+function detectBrowserLanguage() {
+  const userLang = navigator.language || navigator.userLanguage || "";
+  return userLang.startsWith("pt") ? "pt-BR" : "en";
+}
 
 const STORAGE_KEY = "mdview:markdown";
 const INCOMING_KEY = "mdview:incoming";
@@ -79,6 +175,112 @@ function decodeRawHashMarkdown(params, hash) {
 function setStatus(message) {
   status.textContent = message;
 }
+
+function applyToolbarAction(action) {
+  const start = editor.selectionStart;
+  const end = editor.selectionEnd;
+  const text = editor.value;
+  const selected = text.slice(start, end);
+
+  let replacement = "";
+  let cursorOffset = 0;
+
+  switch (action) {
+    case "bold":
+      replacement = `**${selected || "texto em negrito"}**`;
+      cursorOffset = selected ? replacement.length : 2;
+      break;
+    case "italic":
+      replacement = `*${selected || "texto em itálico"}*`;
+      cursorOffset = selected ? replacement.length : 1;
+      break;
+    case "strikethrough":
+      replacement = `~~${selected || "texto tachado"}~~`;
+      cursorOffset = selected ? replacement.length : 2;
+      break;
+    case "h1":
+      replacement = `# ${selected || "Título 1"}`;
+      cursorOffset = replacement.length;
+      break;
+    case "h2":
+      replacement = `## ${selected || "Título 2"}`;
+      cursorOffset = replacement.length;
+      break;
+    case "h3":
+      replacement = `### ${selected || "Título 3"}`;
+      cursorOffset = replacement.length;
+      break;
+    case "ul":
+      replacement = selected
+        ? selected.split("\n").map(line => `- ${line}`).join("\n")
+        : "- Item da lista";
+      cursorOffset = replacement.length;
+      break;
+    case "ol":
+      replacement = selected
+        ? selected.split("\n").map((line, idx) => `${idx + 1}. ${line}`).join("\n")
+        : "1. Item ordenado";
+      cursorOffset = replacement.length;
+      break;
+    case "task":
+      replacement = selected
+        ? selected.split("\n").map(line => `- [ ] ${line}`).join("\n")
+        : "- [ ] Tarefa a cumprir";
+      cursorOffset = replacement.length;
+      break;
+    case "quote":
+      replacement = selected
+        ? selected.split("\n").map(line => `> ${line}`).join("\n")
+        : "> Citação aqui";
+      cursorOffset = replacement.length;
+      break;
+    case "code":
+      replacement = `\`${selected || "código"}\``;
+      cursorOffset = selected ? replacement.length : 1;
+      break;
+    case "codeblock":
+      replacement = `\`\`\`javascript\n${selected || "// Seu código aqui"}\n\`\`\``;
+      cursorOffset = selected ? replacement.length : 14;
+      break;
+    case "link":
+      replacement = `[${selected || "Texto do link"}](https://exemplo.com)`;
+      cursorOffset = replacement.length;
+      break;
+    case "image":
+      replacement = `![${selected || "Descrição da imagem"}](https://via.placeholder.com/150)`;
+      cursorOffset = replacement.length;
+      break;
+    case "table":
+      replacement = `| Cabeçalho 1 | Cabeçalho 2 |\n| ----------- | ----------- |\n| Célula 1   | Célula 2   |`;
+      cursorOffset = replacement.length;
+      break;
+    case "hr":
+      replacement = `\n---\n`;
+      cursorOffset = replacement.length;
+      break;
+    case "undo":
+      document.execCommand("undo");
+      return;
+    case "redo":
+      document.execCommand("redo");
+      return;
+    default:
+      return;
+  }
+
+  editor.focus();
+  document.execCommand("insertText", false, replacement);
+  setMarkdown(editor.value);
+}
+
+document.querySelectorAll(".editor-toolbar .tool-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const action = btn.getAttribute("data-action");
+    if (action) {
+      applyToolbarAction(action);
+    }
+  });
+});
 
 async function copyText(text, successMessage) {
   if (navigator.clipboard?.writeText) {
@@ -146,9 +348,9 @@ async function render(markdown) {
     await mermaid.run({
       nodes: preview.querySelectorAll(".mermaid"),
     });
-    setStatus("Renderizado");
+    setStatus(I18N[currentLang]?.statusRendered || "Renderizado");
   } catch (error) {
-    setStatus("Erro no Mermaid");
+    setStatus(I18N[currentLang]?.statusMermaidError || "Erro no Mermaid");
     console.error(error);
   }
 }
@@ -275,6 +477,9 @@ function checkDownloadUrlParams() {
 }
 
 function processInitialData() {
+  const savedLang = localStorage.getItem("mdview:lang") || detectBrowserLanguage();
+  setLanguage(savedLang);
+
   const incomingStr = sessionStorage.getItem(INCOMING_KEY);
   let markdown = "";
   let autoDownloadInfo = null;
@@ -298,16 +503,16 @@ function processInitialData() {
       markdown = incomingStr;
     }
   } else {
-    markdown = decodeMarkdownFromUrl() || localStorage.getItem(STORAGE_KEY) || "# Ola\n\nDigite Markdown no painel esquerdo.";
+    markdown = decodeMarkdownFromUrl() || localStorage.getItem(STORAGE_KEY) || "# MDView\n\nDigite Markdown no painel esquerdo.";
     autoDownloadInfo = checkDownloadUrlParams();
   }
 
-  setMarkdown(markdown, false);
+  setMarkdown(markdown, true);
 
   if (autoDownloadInfo?.download && markdown) {
     setTimeout(() => {
       downloadMarkdownFile(markdown, autoDownloadInfo.filename);
-      setStatus("Download automatico iniciado");
+      setStatus(I18N[currentLang]?.statusAutoDownload || "Download automático iniciado");
     }, 100);
   }
 }
@@ -324,15 +529,20 @@ clearButton.addEventListener("click", () => {
   setMarkdown("");
 });
 
+langSelect?.addEventListener("change", (e) => {
+  setLanguage(e.target.value);
+  localStorage.setItem("mdview:lang", e.target.value);
+});
+
 saveMarkdownButton?.addEventListener("click", () => {
   downloadMarkdownFile(editor.value, "documento.md");
-  setStatus("Arquivo .MD baixado");
+  setStatus(I18N[currentLang]?.statusSaved || "Arquivo .MD baixado");
 });
 
 copyMarkdownButton.addEventListener("click", () => {
-  copyText(editor.value, "Markdown copiado").catch((error) => {
+  copyText(editor.value, I18N[currentLang]?.statusCopied || "Markdown copiado").catch((error) => {
     console.error(error);
-    setStatus("Nao foi possivel copiar");
+    setStatus(I18N[currentLang]?.statusCopyError || "Não foi possível copiar");
   });
 });
 
