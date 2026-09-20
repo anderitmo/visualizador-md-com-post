@@ -20,8 +20,35 @@ self.addEventListener("fetch", (event) => {
 });
 
 async function renderPost(request) {
-  const markdown = await readMarkdown(request);
-  const safeMarkdown = JSON.stringify(markdown).replaceAll("<", "\\u003c");
+  const url = new URL(request.url);
+  const urlDownload = url.searchParams.get("download") || url.searchParams.get("dl");
+  const urlFilename = url.searchParams.get("filename");
+
+  const parsed = await readPostData(request);
+
+  const markdown = parsed.markdown;
+  const download = parsed.download !== undefined ? parsed.download : urlDownload;
+  const filename = parsed.filename || urlFilename || "documento.md";
+
+  const isDownload =
+    download === true ||
+    (typeof download === "string" &&
+      download.toLowerCase() !== "false" &&
+      download.toLowerCase() !== "0" &&
+      download !== "");
+
+  const finalFilename =
+    typeof download === "string" && download.toLowerCase().endsWith(".md")
+      ? download
+      : filename;
+
+  const payload = {
+    markdown,
+    download: isDownload,
+    filename: finalFilename,
+  };
+
+  const safePayload = JSON.stringify(payload).replaceAll("<", "\\u003c");
 
   return new Response(
     `<!doctype html>
@@ -32,7 +59,7 @@ async function renderPost(request) {
   </head>
   <body>
     <script>
-      sessionStorage.setItem(${JSON.stringify(INCOMING_KEY)}, ${safeMarkdown});
+      sessionStorage.setItem(${JSON.stringify(INCOMING_KEY)}, JSON.stringify(${safePayload}));
       location.replace("./");
     </script>
     <noscript>JavaScript precisa estar ativo para renderizar o Markdown enviado.</noscript>
@@ -46,26 +73,43 @@ async function renderPost(request) {
   );
 }
 
-async function readMarkdown(request) {
+async function readPostData(request) {
   const contentType = request.headers.get("content-type") || "";
 
   if (contentType.includes("application/json")) {
-    const payload = await request.json();
-    return payload.markdown || payload.md || payload.content || "";
+    try {
+      const payload = await request.json();
+      return {
+        markdown: payload.markdown || payload.md || payload.content || "",
+        download: payload.download ?? payload.dl,
+        filename: payload.filename,
+      };
+    } catch {
+      return { markdown: "" };
+    }
   }
 
   if (
     contentType.includes("application/x-www-form-urlencoded") ||
     contentType.includes("multipart/form-data")
   ) {
-    const formData = await request.formData();
-    return (
-      formData.get("markdown") ||
-      formData.get("md") ||
-      formData.get("content") ||
-      ""
-    ).toString();
+    try {
+      const formData = await request.formData();
+      return {
+        markdown: (
+          formData.get("markdown") ||
+          formData.get("md") ||
+          formData.get("content") ||
+          ""
+        ).toString(),
+        download: formData.get("download") ?? formData.get("dl"),
+        filename: formData.get("filename")?.toString(),
+      };
+    } catch {
+      return { markdown: "" };
+    }
   }
 
-  return request.text();
+  const text = await request.text();
+  return { markdown: text };
 }
